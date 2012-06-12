@@ -1,8 +1,8 @@
-#include "../kernel/driver/monitor.h"
+#include "kernel/driver/monitor.h"
 
 /**********************************************
  kmain()
- Punto de entrada de código C.
+ Punto de entrada de cÃ³digo C.
  *************************************************/
 
 kmain() {
