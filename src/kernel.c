@@ -1,5 +1,6 @@
-#include "kernel/driver/monitor.h"
+#include "kernel/system/monitor.h"
 #include "kernel/system/descriptor_tables.h"
+#include "kernel/system/timer.h"
 /**********************************************
  kmain()
  Punto de entrada de código C.
@@ -15,4 +16,8 @@ kmain() {
 
 	asm volatile("int $0x3");
 	asm volatile("int $0x4");
+
+	asm volatile("sti");
+	init_timer(50000);
+	//asm volatile("cli");
 }
