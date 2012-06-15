@@ -6,9 +6,14 @@
  Punto de entrada de código C.
  *************************************************/
 
+func(registers_t reg) {
+	monitor_write('key pressed');
+}
+
 kmain() {
 	// Initialize all the ISRs and segmentation
 	init_descriptor_tables();
+	register_interrupt_handler(32, &func);
 	// Initialize the screen (by clearing it)
 	monitor_clear();
 	// Write out a sample string
