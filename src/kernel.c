@@ -1,6 +1,7 @@
 #include "kernel/system/monitor.h"
 #include "kernel/system/descriptor_tables.h"
 #include "kernel/system/timer.h"
+#include "util/logger.h"
 /**********************************************
  kmain()
  Punto de entrada de código C.
@@ -18,7 +19,7 @@ kmain() {
 	monitor_clear();
 	// Write out a sample string
 	monitor_write("Hello, world!\n");
-
+	log("chupala");
 	asm volatile("int $0x3");
 	asm volatile("int $0x4");
 
