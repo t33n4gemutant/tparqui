@@ -15,8 +15,9 @@ if [ $STATUS -ne 0 ]
 then
     echo "Error status: $STATUS"
 else
-    if [ ! -e img/tpe.img ]
+    if [ ! -f img/tpe.img ]
     then
+        mkdir img
         cp doc/tpe.img img/tpe.img
     fi
     mcopy bin/kernel.bin b:boot/ -o
