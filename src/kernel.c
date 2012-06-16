@@ -8,17 +8,11 @@
  kmain()
  Punto de entrada de código C.
  *************************************************/
-func(registers_t reg);
-
-func(registers_t reg) {
-	monitor_write("key pressed");
-	log(L_INFO, "scancode: %d", inb(0x60));
-}
 
 kmain() {
 	// Initialize all the ISRs and segmentation
 	init_descriptor_tables();
-	register_interrupt_handler(33, &func);
+
 	// Initialize the screen (by clearing it)
 	monitor_clear();
 	// Write out a sample string
@@ -28,6 +22,7 @@ kmain() {
 
 	asm volatile("sti");
 	init_timer(50);
+	init_keyboard();
 	while(1);
 	//asm volatile("cli");
 }
