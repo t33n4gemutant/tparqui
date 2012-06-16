@@ -1,15 +1,21 @@
-#include <util/logger.h>
+#include "logger.h"
 
-PRIVATE void prints(char * string);
-PRIVATE char * numberBaseNtoString(unsigned int number, int base, char * out);
-PRIVATE void printLevel(enum LogLevel level);
+static void prints(char * string);
+static char * numberBaseNtoString(unsigned int number, int base, char * out);
+static void printLevel(enum LogLevel level);
 
-PRIVATE void logc(char c) {
+void port_parallel_write(char c) {
+    outb(0x37a, 0x04|0x08);
+    outb(0x378, (unsigned char)c);
+    outb(0x37a, 0x01);
+}
+
+static void logc(char c) {
 	//port_serial_write(c);
 	port_parallel_write(c);
 }
 
-PRIVATE void printLevel(enum LogLevel level) {
+static void printLevel(enum LogLevel level) {
     char *levelNames[] = {"FATAL", "ERROR", "INFO", "DEBUG", "TRACE"};
     logc('[');
     prints(levelNames[level]);
@@ -81,14 +87,14 @@ int _log(char* file, int line, enum LogLevel level, char *formatString, ...) {
     return 0;
 }
 
-PRIVATE void prints(char * string) {
+static void prints(char * string) {
     while (*string != '\0') {
         logc(*string);
         string++;
     }
 }
 
-PRIVATE char * numberBaseNtoString(unsigned int number, int base, char * out) {
+static char * numberBaseNtoString(unsigned int number, int base, char * out) {
 
     int digits[40];
     int position = 0;

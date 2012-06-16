@@ -12,6 +12,7 @@ func(registers_t reg);
 
 func(registers_t reg) {
 	monitor_write("key pressed");
+	log(L_INFO, "scancode: %d", inb(0x60));
 }
 
 kmain() {
@@ -22,7 +23,6 @@ kmain() {
 	monitor_clear();
 	// Write out a sample string
 	monitor_write("Hello, world!\n");
-	log("chupala");
 	asm volatile("int $0x3");
 	asm volatile("int $0x4");
 

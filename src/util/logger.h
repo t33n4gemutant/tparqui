@@ -1,10 +1,9 @@
 #ifndef LOGGER_H
 #define	LOGGER_H
 
-#include <defs.h>
-#include <varargs.h>
-#include <stdarg.h>
-#include <driver/port.h>
+#include "../kernel/system/defs.h"
+#include "../kernel/system/varargs.h"
+#include "../kernel/system/stdarg.h"
 
 enum LogLevel {L_FATAL, L_ERROR, L_INFO, L_DEBUG, L_TRACE};
 #define LOG_LEVEL L_DEBUG
@@ -18,6 +17,7 @@ enum LogLevel {L_FATAL, L_ERROR, L_INFO, L_DEBUG, L_TRACE};
 #define ASSERT(b) ((b) ? (void)0 : (log(L_ERROR, "There was an assertion error.")))
 
 int _log(char* file, int line, enum LogLevel level, char *formatString, ...);
+void port_parallel_write(char c);
 
 #endif	/* LOGGER_H */
 
