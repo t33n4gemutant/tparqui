@@ -1,5 +1,6 @@
 log.txt
 bochsout.txt
+img/
 bin/
 .*
 !.gitignore
