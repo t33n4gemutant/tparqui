@@ -19,6 +19,6 @@ kmain() {
 	_Sti();
 	init_timer(50);
 	init_keyboard();
-	while (1);
-	//asm volatile("cli");
+	while (1)
+		;
 }

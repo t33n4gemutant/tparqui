@@ -1,6 +1,7 @@
 #include "keyboard.h"
 #include "isr.h"
 #include "monitor.h"
+#include "commands.h"
 #include "../../util/logger.h"
 
 unsigned char lcase[60] = { 0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -40,7 +41,9 @@ void handleScanCode(unsigned char scanCode) {
 	if (!checkSpecialKey(scanCode)) {
 		if (!IS_BREAK(scanCode)) {
 			char c = translateSc(CLEAR_BREAK_BIT(scanCode));
-			monitor_put(c);
+			if(!isShortcut(c)){
+				monitor_put(c);
+			}
 		}
 	}
 }
@@ -120,7 +123,6 @@ int checkSpecialKey(unsigned char scanCode) {
 	case 0xC2:
 	case 0xC3:
 	case 0xC4:
-// fbit = (1 << (scanCode - 0xBB)); // FIXME: why won't this work??
 		kbFlags &= ~FN;
 		fbit = 0; // turns off all F key flags
 		fKeys &= fbit;
@@ -136,7 +138,7 @@ char translateSc(unsigned char scanCode) {
 	return SHIFT_PRESSED() ? ucase[scanCode] : lcase[scanCode];
 }
 
-/* Installs the keyboard handler into IRQ1 */
+/* Sets the keyboard handler into IRQ1 */
 
 void init_keyboard() {
 	fKeys = 0;

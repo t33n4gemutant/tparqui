@@ -69,6 +69,7 @@ char *strcpy(char *dest, const char *src)
       *dest++ = *src++;
     }
     while (*src != 0);
+    return dest;
 }
 
 // Concatenate the NULL-terminated string src onto
