@@ -11,10 +11,17 @@ void getCommand(char * buffer) {
 	} else if (!strcmp(buffer, "chat")) {
 		monitor_switch_to(10);
 		init_serial();
-	} else if (!strcmp(buffer, "exit") && current_terminal == 10) {
-		monitor_clear();
-		monitor_switch_to(1);
-		monitor_put('\n');
+	} else if (current_terminal == 10) { //Chat mode
+		if (!strcmp(buffer, "exit")) {
+			monitor_clear();
+			monitor_switch_to(1);
+			monitor_put('\n');
+		}
+		int i = 0;
+		while (buffer[i]) {
+			port_serial_write(buffer[i++]);
+		}
+
 	}
 }
 

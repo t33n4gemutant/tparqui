@@ -7,10 +7,10 @@ void init_serial();
 //
 int serial_received();
 
-char read_serial();
+char port_serial_read();
 
 int is_transmit_empty();
 
-void write_serial(char c);
+void port_serial_write(char c);
 
 #endif /* SERIAL_H_ */
