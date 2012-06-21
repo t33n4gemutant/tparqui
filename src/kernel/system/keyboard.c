@@ -143,4 +143,5 @@ char translateSc(unsigned char scanCode) {
 void init_keyboard() {
 	fKeys = 0;
 	register_interrupt_handler(IRQ1, &keyboard_handler);
+	log(L_INFO, "Keyboard initialized");
 }

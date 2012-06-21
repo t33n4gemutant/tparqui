@@ -14,9 +14,12 @@ kmain() {
 	// Initialize all the ISRs and segmentation
 	init_descriptor_tables();
 
-	// Initialize the monitor
+	//Enable all interrupts
+	_mascaraPIC1(0x00);
+	_mascaraPIC2(0x00);
+
+	//Initialize modules
 	init_monitor();
-	_Sti();
 	init_timer(50);
 	init_keyboard();
 	init_serial();

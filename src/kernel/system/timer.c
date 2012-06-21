@@ -35,4 +35,5 @@ void init_timer(u32int frequency)
     // Send the frequency divisor.
     outb(0x40, l);
     outb(0x40, h);
+    log(L_INFO, "Timer initialized");
 }
