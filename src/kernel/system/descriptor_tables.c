@@ -31,15 +31,9 @@ extern isr_t interrupt_handlers[];
 // initialises the GDT and IDT.
 void init_descriptor_tables()
 {
-    /* Habilito interrupcion de timer tick*/
-    _Cli();
-    _mascaraPIC1(0xFE);
-    _mascaraPIC2(0xFF);
-    _Sti();
-
-    // Initialise the global descriptor table.
-    // init_gdt();
-    // Initialise the interrupt descriptor table.
+    // Initialize the global descriptor table.
+    init_gdt();
+    // Initialize the interrupt descriptor table.
     init_idt();
     // Nullify all the interrupt handlers.
     memset(&interrupt_handlers, 0, sizeof(isr_t)*256);
@@ -140,6 +134,8 @@ static void init_idt()
     idt_set_gate(45, (u32int)irq13, 0x08, 0x8E);
     idt_set_gate(46, (u32int)irq14, 0x08, 0x8E);
     idt_set_gate(47, (u32int)irq15, 0x08, 0x8E);
+
+    idt_set_gate(128, (u32int)isr80h, 0x08, 0x8E);/*128 = 80h*/ /*DELETE THIS ??????????????????????????*/
 
     idt_flush((u32int)&idt_ptr);
 }

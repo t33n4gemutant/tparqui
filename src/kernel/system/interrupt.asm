@@ -5,6 +5,8 @@
 
 ; This macro creates a stub for an ISR which does NOT pass it's own
 ; error code (adds a dummy errcode byte).
+EXTERN stop
+
 %macro ISR_NOERRCODE 1
   global isr%1
   isr%1:
@@ -84,6 +86,14 @@ IRQ  13,    45
 IRQ  14,    46
 IRQ  15,    47
 
+
+  global isr80h
+  isr80h:
+    cli ; Disable interrupts firstly.
+    push byte 0 ; Push a dummy error code.
+    push byte 80 ; Push the interrupt number.(128 = 80h)
+    jmp isr_common_stub ; Go to our common handler code.
+
 ; In isr.c
 extern isr_handler
 
@@ -145,6 +155,3 @@ irq_common_stub:
     add esp, 8     ; Cleans up the pushed error code and pushed ISR number
     sti
     iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
-
-
-        

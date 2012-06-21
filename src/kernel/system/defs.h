@@ -25,6 +25,14 @@
 #define ACS_DATA        (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
 #define ACS_STACK       (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
 
+#define SYSTEM_WRITE 101
+#define SYSTEM_READ 102
+
+#define STDIN 103
+#define STDOUT 104
+
+#define TERMINAL_QTY 9
+
      
 
 #endif

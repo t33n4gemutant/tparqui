@@ -6,25 +6,57 @@
 
 unsigned char lcase[60] = { 0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9',
 		'0', '-', '=', '\b', /* Backspace */
-		'\t', /* Tab */
-		'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n', /* Enter key */
-		0, /* 29 - Control */
-		'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', 0, /* Left shift */
-		'\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, /* Right shift */
-		'*', 0, /* Alt */
-		' ' /* Space bar */
+		'\t', /* Tab */'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[',
+		']', '\n', /* Enter key */
+		0, /* 29 - Control */'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',
+		'\'', '`', 0,
+		/* Left shift */'\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/',
+		0, /* Right shift */'*', 0,
+		/* Alt */' ' /* Space bar */
+};
+
+unsigned int accen[60] = { 0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9',
+		'0', '-', '=', '\b', /* Backspace */
+		'\t', /* Tab */'q', 'w', 130, 'r', 't', 'y', 163, 161, 162, 'p', '[',
+		']', '\n', /* Enter key */
+		0, /* 29 - Control */160, 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',
+		'\'', '`', 0,
+		/* Left shift */'\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/',
+		0, /* Right shift */'*', 0,
+		/* Alt */' ' /* Space bar */
+};
+
+unsigned int spanl[60] = { 0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9',
+		'0', '\'', '¿', '\b', /* Backspace */
+		'\t', /* Tab */'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', ' ',
+		'+', '\n', /* Enter key */
+		0, /* 29 - Control */'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ñ',
+		'{', '|', 0,
+		/* Left shift */'<', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '-',
+		0, /* Right shift */'*', 0,
+		/* Alt */' ' /* Space bar */
+};
+
+unsigned int spanu[60] = { 0, 27, '!', '"', '#', '$', '%', '&', '/', '(', ')',
+		'=', '?', '¡', '\b', /* Backspace */
+		'\t', /* Tab */'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', ' ',
+		'*', '\n', /* Enter key */
+		0, /* 29 - Control */'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ',
+		'[', '°', 0,
+		/* Left shift */'|', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ';', ':', '_',
+		0, /* Right shift */'*', 0,
+		/* Alt */' ' /* Space bar */
 };
 
 unsigned char ucase[60] = { 0, 27, '!', '@', '#', '$', '%', '^', '&', '*', '(',
 		')', '_', '+', '\b', /* Backspace */
-		'\t', /* Tab */
-		'Q', 'W', 'E', 'R', /* 19 */
-		'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '\n', /* Enter key */
-		0, /* 29 - Control */
-		'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', '~', 0, /* Left shift */
-		'|', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', 0, /* Right shift */
-		'*', 0, /* Alt */
-		' ' /* Space bar */
+		'\t', /* Tab */'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{',
+		'}', '\n', /* Enter key */
+		0, /* 29 - Control */'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':',
+		'"', '~', 0,
+		/* Left shift */'|', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?',
+		0, /* Right shift */'*', 0,
+		/* Alt */' ' /* Space bar */
 };
 
 /* Handles the keyboard interrupt */
@@ -33,7 +65,7 @@ void keyboard_handler(registers_t regs) {
 
 	/* Read from the keyboard's data buffer */
 	scancode = inb(0x60);
-	log(L_DEBUG, "scancode: %d", scancode);
+	log(L_INFO, "scancode: %d", scancode);
 	handleScanCode(scancode);
 }
 
@@ -41,8 +73,8 @@ void handleScanCode(unsigned char scanCode) {
 	if (!checkSpecialKey(scanCode)) {
 		if (!IS_BREAK(scanCode)) {
 			char c = translateSc(CLEAR_BREAK_BIT(scanCode));
-			if(!isShortcut(c)){
-				monitor_put(c);
+			if (!isShortcut(c)) {
+				putc(c);
 			}
 		}
 	}
@@ -98,6 +130,13 @@ int checkSpecialKey(unsigned char scanCode) {
 	case 0xE0:
 		kbFlags |= ESCAPE;
 		break;
+		/* Accents */
+	case 0x28:
+		kbFlags &= ~ACCENT;
+		break;
+	case 0xA8:
+		kbFlags |= ACCENT;
+		break;
 		/* F1 through F10 */
 	case 0x3B:
 	case 0x3C:
@@ -123,6 +162,7 @@ int checkSpecialKey(unsigned char scanCode) {
 	case 0xC2:
 	case 0xC3:
 	case 0xC4:
+		fbit = (1 << (scanCode - 0xBB));
 		kbFlags &= ~FN;
 		fbit = 0; // turns off all F key flags
 		fKeys &= fbit;
@@ -135,13 +175,26 @@ int checkSpecialKey(unsigned char scanCode) {
 }
 
 char translateSc(unsigned char scanCode) {
-	return SHIFT_PRESSED() ? ucase[scanCode] : lcase[scanCode];
+	if (SHIFT_PRESSED()) {
+		if (IS_SPANISH()) {
+			return spanu[scanCode];
+		} else {
+			return ucase[scanCode];
+		}
+	} else {
+		if (IS_SPANISH()) {
+			return spanl[scanCode];
+		}
+	}
+	if (IS_CTRL()) {
+		return accen[scanCode];
+	}
+	return lcase[scanCode];
 }
 
-/* Sets the keyboard handler into IRQ1 */
+/* Installs the keyboard handler into IRQ1 */
 
 void init_keyboard() {
 	fKeys = 0;
 	register_interrupt_handler(IRQ1, &keyboard_handler);
-	log(L_INFO, "Keyboard initialized");
 }

@@ -10,11 +10,6 @@ u16int *video_memory = (u16int *) 0xB8000;
 // Stores the cursor position.
 u8int cursor_x = 0;
 u8int cursor_y = 0;
-char buffer[80];
-
-int TERMINAL_SIZE = 25 * 80;
-static u16int terminals[4][2000];
-
 
 // Updates the hardware cursor.
 static void move_cursor() {
@@ -54,12 +49,12 @@ static void scroll() {
 
 // Writes a single character out to the screen.
 void monitor_put(char c) {
-	// The background color is black (0), the foreground is white (15).
+	// The background colour is black (0), the foreground is white (15).
 	u8int backColour = 0;
 	u8int foreColour = 15;
 
 	// The attribute byte is made up of two nibbles - the lower being the
-	// foreground color, and the upper the background colour.
+	// foreground colour, and the upper the background colour.
 	u8int attributeByte = (backColour << 4) | (foreColour & 0x0F);
 	// The attribute byte is the top 8 bits of the word we have to send to the
 	// VGA board.
@@ -68,10 +63,9 @@ void monitor_put(char c) {
 
 	// Handle a backspace, by moving the cursor back one space and deleting last character
 	if (c == 0x08 && cursor_x) {
-		buffer[cursor_x] = '\0';
 		cursor_x--;
 		location = video_memory + (cursor_y * 80 + cursor_x);
-		if (cursor_x == 0) {
+		if (*location == ('>' | attribute)) {
 			cursor_x++;
 		} else {
 			*location = ' ' | attribute;
@@ -81,33 +75,24 @@ void monitor_put(char c) {
 	// Handle a tab by increasing the cursor's X, but only to a point
 	// where it is divisible by 8.
 	else if (c == 0x09) {
-		buffer[cursor_x - 1] = c;
 		cursor_x = (cursor_x + 8) & ~(8 - 1);
 	}
 
 	// Handle carriage return
 	else if (c == '\r') {
-		buffer[cursor_x - 1] = c;
 		cursor_x = 0;
 	}
 
 	// Handle newline by moving cursor back to left and increasing the row
 	else if (c == '\n') {
 		cursor_x = 0;
-		cursor_y++;
-		getCommand(buffer);
-		int i = 0;
-		while (i < 80) {
-			buffer[i] = '\0';
-			i++;
-		}
-		location = video_memory + (cursor_y * 80 + cursor_x);
-		*location = '>' | attribute;
-		cursor_x = 1;
+		cursor_y++;/*
+		 *location = video_memory + (cursor_y * 80 + cursor_x);
+		 *location = '>' | attribute;
+		 cursor_x = 1;*/
 	}
 	// Handle any other printable character.
 	else if (c >= ' ') {
-		buffer[cursor_x - 1] = c;
 		location = video_memory + (cursor_y * 80 + cursor_x);
 		*location = c | attribute;
 		cursor_x++;
@@ -118,11 +103,6 @@ void monitor_put(char c) {
 	if (cursor_x >= 80) {
 		cursor_x = 0;
 		cursor_y++;
-		int i = 0;
-		while (i < 80) {
-			buffer[i] = '\0';
-			i++;
-		}
 	}
 
 	// Scroll the screen if needed.
@@ -228,62 +208,43 @@ void init_monitor() {
 	monitor_write(
 			"--------------------------------------------------------------------------------");
 	monitor_write(">");
-
-	current_terminal = 1;
-	monitor_switch_to(2);
-	monitor_switch_to(1);
-
-	int i = 1;
-	int j = 0;
-	while (i < 10) {
-		while (j < TERMINAL_SIZE) {/*
-		 terminals[i][j] = (' ' | attribute);*/
-			terminals[i][j] = terminals[current_terminal][j];
-			j++;
-		}
-		i++;
-		j = 0;
-	}
 }
 
-void monitor_switch_to(int next_terminal) {
-	if (current_terminal == next_terminal) {
-		return;
-	}
+void monitor_switch_to(u16int * terminal, u16int * currentTerminal) {
 	u8int backColour = 0;
 	u8int foreColour = 15;
 	u8int attributeByte = (backColour << 4) | (foreColour & 0x0F);
 	u16int attribute = attributeByte << 8;
-	u16int *location;
+	u16int * location;
 	int i = 0;
 	while (i < TERMINAL_SIZE) {
 		location = video_memory + i;
-		terminals[current_terminal][i] = *location;
+		currentTerminal[i] = *location;
 		i++;
 	}
 	monitor_clear();
 	u8int aux_x = 0;
 	u8int aux_y = 0;
+	cursor_x = 0;
+	cursor_y = 0;
 	while ((cursor_x + (cursor_y) * 80) < (TERMINAL_SIZE - 1)) {
 		location = video_memory + (cursor_y * 80 + cursor_x);
-		*location = terminals[next_terminal][cursor_x + cursor_y * 80];
+		*location = terminal[cursor_x + cursor_y * 80];
 		cursor_x++;
 		if (cursor_x == 80) {
 			cursor_x = 0;
 			cursor_y++;
 		}
-		if (terminals[next_terminal][cursor_x + cursor_y * 80]
-				!= (' ' | attribute)) {
+		if (terminal[cursor_x + cursor_y * 80] != (' ' | attribute)) {
 			aux_x = cursor_x;
 			aux_y = cursor_y;
 		}
 		scroll();
-		//move_cursor();
+		move_cursor();
 	}
 	cursor_x = aux_x;
 	cursor_y = aux_y;
 	cursor_x++;
 	scroll();
 	move_cursor();
-	current_terminal = next_terminal;
 }

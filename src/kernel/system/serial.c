@@ -51,5 +51,6 @@ void port_serial_write(char a) {
 }
 
 void serial_listen(int i) {
+	log(L_INFO,"listening to serial");
 	outb(COM1 + 1, i); // Enable recieve/transmit interrupts
 }
