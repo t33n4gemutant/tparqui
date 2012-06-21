@@ -33,7 +33,7 @@ void keyboard_handler(registers_t regs) {
 
 	/* Read from the keyboard's data buffer */
 	scancode = inb(0x60);
-	log(L_INFO, "scancode: %d", scancode);
+	log(L_DEBUG, "scancode: %d", scancode);
 	handleScanCode(scancode);
 }
 

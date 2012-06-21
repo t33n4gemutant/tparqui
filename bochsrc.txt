@@ -7,6 +7,11 @@ vgaromimage: file=/usr/share/vgabios/vgabios.bin
 # what disk images will be used
 #floppya: 1_44=/home/srv/622C.IMG, status=inserted
 floppya: 1_44=./img/tpe.img, status=inserted
+com1: enabled=1, mode=term, dev=/dev/pts/3
+#com1: enabled=1, mode=file, dev=/home/federelli/facu/tparqui/fedeserial
+#com1: enabled=1, mode=pipe-client, dev=\\.\pipe\mypipe
+#com1: enabled=1, mode=pipe-server, dev=\\.\pipe\mypipe
+
 #floppyb: 1_44=floppyb.img, status=inserted
 # hard disk
 #ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14

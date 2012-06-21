@@ -3,6 +3,7 @@
 
 #ifndef COMMON_H
 #define COMMON_H
+#include "../../util/logger.h"
 
 // Some nice typedefs, to standardize sizes across platforms.
 // These typedefs are written for 32-bit X86.

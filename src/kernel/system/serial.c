@@ -1,16 +1,17 @@
 #include "serial.h"
 #include "isr.h"
+#include "../../util/logger.h"
 
 #define COM1 0x3f8
 
 /* Handles the serial port interrupt */
 void serial_handler(registers_t regs) {
+	log(L_INFO, "handler");
 	char c = port_serial_read();
 	monitor_put(c);
 }
 
 void init_serial() {
-	register_interrupt_handler(IRQ3, &serial_handler);
 	register_interrupt_handler(IRQ4, &serial_handler);
 
 	outb(COM1 + 1, 0x00); // Disable all interrupts
@@ -27,6 +28,7 @@ int serial_received() {
 }
 
 char port_serial_read() {
+	log(L_INFO, "sread");
 	while (serial_received() == 0)
 		;
 	return inb(COM1);
@@ -37,6 +39,8 @@ int is_transmit_empty() {
 }
 
 void port_serial_write(char a) {
+	log(L_INFO, "sw");
+
 	while (is_transmit_empty() == 0)
 		;
 

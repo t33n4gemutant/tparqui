@@ -6,7 +6,7 @@
 #include "../kernel/system/stdarg.h"
 
 enum LogLevel {L_FATAL, L_ERROR, L_INFO, L_DEBUG, L_TRACE};
-#define LOG_LEVEL L_DEBUG
+#define LOG_LEVEL L_INFO
 /**
  * @param level a level of type Level
  * @param fmt a format like printf

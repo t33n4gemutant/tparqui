@@ -21,7 +21,11 @@ void getCommand(char * buffer) {
 		while (buffer[i]) {
 			port_serial_write(buffer[i++]);
 		}
-
+		char c;
+		do {
+			c = port_serial_read();
+			monitor_put(c);
+		} while(c != '\n');
 	}
 }
 
