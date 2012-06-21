@@ -24,7 +24,7 @@ static void move_cursor() {
 // Scrolls the text on the screen up by one line.
 static void scroll() {
 
-	// Get a space character with the default colour attributes.
+	// Get a space character with the default color attributes.
 	u8int attributeByte = (0 /*black*/<< 4) | (15 /*white*/& 0x0F);
 	u16int blank = 0x20 /* space */| (attributeByte << 8);
 
@@ -49,12 +49,12 @@ static void scroll() {
 
 // Writes a single character out to the screen.
 void monitor_put(char c) {
-	// The background colour is black (0), the foreground is white (15).
+	// The background color is black (0), the foreground is white (15).
 	u8int backColour = 0;
 	u8int foreColour = 15;
 
 	// The attribute byte is made up of two nibbles - the lower being the
-	// foreground colour, and the upper the background colour.
+	// foreground color, and the upper the background colour.
 	u8int attributeByte = (backColour << 4) | (foreColour & 0x0F);
 	// The attribute byte is the top 8 bits of the word we have to send to the
 	// VGA board.
@@ -65,7 +65,7 @@ void monitor_put(char c) {
 	if (c == 0x08 && cursor_x) {
 		cursor_x--;
 		location = video_memory + (cursor_y * 80 + cursor_x);
-		if (*location == ('>' | attribute)) {
+		if (cursor_x == 0) {
 			cursor_x++;
 		} else {
 			*location = ' ' | attribute;
@@ -86,10 +86,7 @@ void monitor_put(char c) {
 	// Handle newline by moving cursor back to left and increasing the row
 	else if (c == '\n') {
 		cursor_x = 0;
-		cursor_y++;/*
-		 *location = video_memory + (cursor_y * 80 + cursor_x);
-		 *location = '>' | attribute;
-		 cursor_x = 1;*/
+		cursor_y++;
 	}
 	// Handle any other printable character.
 	else if (c >= ' ') {
