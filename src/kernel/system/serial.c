@@ -24,8 +24,7 @@ void init_serial() {
 	outb(COM1 + 3, 0x03); // 8 bits, no parity, one stop bit
 	outb(COM1 + 2, 0xC7); // Enable FIFO, clear them, with 14-byte threshold
 	outb(COM1 + 4, 0x0B); // IRQs enabled, RTS/DSR set
-	outb(COM1 + 1, 0x01);
-	register_interrupt_handler(IRQ3, &serial_handler);
+	//register_interrupt_handler(IRQ3, &serial_handler);
 	register_interrupt_handler(IRQ4, &serial_handler);
 	log(L_INFO, "Serial initialized");
 }
@@ -49,4 +48,8 @@ void port_serial_write(char a) {
 		;
 
 	outb(COM1, a);
+}
+
+void serial_listen(int i) {
+	outb(COM1 + 1, i); // Enable recieve/transmit interrupts
 }
