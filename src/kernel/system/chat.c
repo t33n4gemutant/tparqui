@@ -13,10 +13,10 @@ u16int chatBufPointer;
 void init_chat() {
 	//chatBufPointer = 0;
 	/*int j = 0;
-	while (j < TERMINAL_SIZE) {
-		chatTerminal[j] = '\0';
-		j++;
-	}*/
+	 while (j < TERMINAL_SIZE) {
+	 chatTerminal[j] = '\0';
+	 j++;
+	 }*/
 }
 
 void chatInsert(char c) {
@@ -54,6 +54,7 @@ void clearChatBuffer() {
 void chat_to_bash() {
 	current_program = BASH;
 	//Stop listening to serial port
+	monitor_put('\n');
 	serial_listen(0);
 	monitor_switch_to(terminals[current_terminal - 1], chatTerminal);
 }

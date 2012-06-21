@@ -6,14 +6,14 @@
 static char wbuffer[80];
 int bufferpointer;
 
-char getBufferChar(){
-	if(bufferpointer == 0){
+char getBufferChar() {
+	if (bufferpointer == 0) {
 		return '\0';
 	}
 	char ret = wbuffer[0];
 	int i = 0;
-	while(i < bufferpointer){
-		wbuffer[i] = wbuffer[i+1];
+	while (i < bufferpointer) {
+		wbuffer[i] = wbuffer[i + 1];
 		i++;
 	}
 	bufferpointer--;
@@ -33,68 +33,67 @@ void syswrite(int fd, char c) {
 	}
 }
 
-void printf(const char * format, ...){
-    int escaped = 0;
-    int special = 0;
-    va_list args;
-    va_start(args, format);
-    while(*format != '\0'){
-        if(special){
-            if(*format == 'd' || *format == 'i'){
-               putd(va_arg(args, int));
-            }
-            if(*format == 'c'){
-                putc(va_arg(args, char));
-            }
-            if(*format == 'f'){
-            	putf(va_arg(args, double) );
-            }
-            if(*format == 'u'){
-            	putu(va_arg(args, unsigned));
-            }
-        }else if(escaped){
-            if(*format == 'n'){
-                putc('\n');
-            }else if(*format == 't'){
-                printf("    ");
-            }else{
-                putc(*format);
-            }
+void printf(const char * format, ...) {
+	int escaped = 0;
+	int special = 0;
+	va_list args;
+	va_start(args, format);
+	while (*format != '\0') {
+		if (special) {
+			if (*format == 'd' || *format == 'i') {
+				putd(va_arg(args, int));
+			}
+			if (*format == 'c') {
+				putc(va_arg(args, char));
+			}
+			if (*format == 'f') {
+				putf(va_arg(args, double));
+			}
+			if (*format == 'u') {
+				putu(va_arg(args, unsigned));
+			}
+		} else if (escaped) {
+			if (*format == 'n') {
+				putc('\n');
+			} else if (*format == 't') {
+				printf("    ");
+			} else {
+				putc(*format);
+			}
 
-        }
+		}
 
-        if(*format == '\\'){
-            if(!escaped){
-                escaped = 1;
-            }else{
-                escaped = 0;
-            }
-        }else{
-            escaped = 0;
-        }
-        if(*format == '%'){
-            special = 1;
-        }else{
-            special = 0;
-        }
-        format++;
-    }
-    va_end(args);
+		if (*format == '\\') {
+			if (!escaped) {
+				escaped = 1;
+			} else {
+				escaped = 0;
+			}
+		} else {
+			escaped = 0;
+		}
+		if (*format == '%') {
+			special = 1;
+		} else {
+			special = 0;
+		}
+		format++;
+	}
+	va_end(args);
 }
 
-void putc(char c){
-	if(c == '\0'){
+void putc(char c) {
+	if (c == '\0') {
 		return;
 	}
 	__write(STDOUT, c);
 }
 
-
-void putd(char c){
+void putd(char c) {
 }
-void putf(char c){
+void putf(char c) {
 }
-void putu(char c){
+void putu(char c) {
 }
 
 void __write(int fileDescriptor, char c) {
@@ -107,7 +106,7 @@ char __read(int fd) {
 	return c[0];
 }
 
-char getc(){
+char getc() {
 	return __read(STDIN);
 	/*_SystemCalls(SYSTEM_READ, fileDescriptor);*/
 }

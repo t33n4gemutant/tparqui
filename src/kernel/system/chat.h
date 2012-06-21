@@ -7,7 +7,6 @@ void communicate();
 void clearChatBuffer();
 void chat_to_bash();
 
-
 static u16int chatTerminal[TERMINAL_SIZE];
 static char chatBuffer[CHAT_BUFFER];
 u16int chatBufPointer;

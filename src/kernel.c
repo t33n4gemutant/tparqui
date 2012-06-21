@@ -40,13 +40,10 @@ kmain() {
 		char c = getc(STDIN);
 		if (c != '\0') {
 			monitor_put(c);
-			log(L_INFO, "out_%c_");
 			if (current_program == BASH) {
-				log(L_INFO, "inbash_%c_");
 				bashInsert(c);
 			}
 			if (current_program == CHAT) {
-				log(L_INFO, "inchat_%c_");
 				chatInsert(c);
 			}
 		}
@@ -64,27 +61,6 @@ void int80h(u8int sysCallNumber, void ** args) {
 
 	case SYSTEM_READ:
 		sysread((u8int) args[12], (char *) args[1]);
-		/*
-		 monitor_write("Otros valores", 0);
-		 monitor_write("  <", 0);
-		 monitor_put(*((char *) args[0]), 0);
-		 monitor_write(">  <", 0);
-		 monitor_put(*((char *) args[1]), 0);
-		 monitor_write(">  <", 0);
-		 monitor_put(*((char *) args[2]), 0);
-		 monitor_write(">  <", 0);
-		 monitor_put(*((char *) args[3]), 0);
-		 monitor_write(">  <", 0);
-		 monitor_put(*((char *) args[4]), 0);
-		 monitor_write(">  <", 0);
-		 monitor_put(*((char *) args[5]), 0);
-		 monitor_write(">  <", 0);
-		 monitor_put(*((char *) args[6]), 0);
-		 monitor_write(">  <", 0);
-		 monitor_put(*((char *) args[7]), 0);
-		 monitor_write(">  <", 0);
-		 monitor_put(*((char *) args[8]), 0);
-		 monitor_write(">\n", 0);*/
 		break;
 	case SYSTEM_WRITE:
 		syswrite((u8int) args[12], (char) args[1]);
@@ -130,18 +106,6 @@ void int80h(u8int sysCallNumber, void ** args) {
 		monitor_write(">  <");
 		monitor_write_dec((u8int) args[16]);
 		monitor_write(">\n");
-
-		/*
-		 int f = -100000;
-		 while(f < 100000){
-		 f++;
-		 f--;
-		 f++;
-		 f--;
-		 f++;
-		 f--;
-		 f++;
-		 }*/
 		break;
 	}
 	return;

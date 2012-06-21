@@ -56,14 +56,14 @@ void interpret() {
 	} else if (!strcmp(pointer, "about")) {
 		monitor_write("ArquiOS v0.1 by Elli Federico and Pierri Alan\n>");
 	} else if (!strcmp(pointer, "help")) {
-		monitor_write("about 	- Display info about this OS\n");
-		monitor_write("help 	- Display this help menu\n");
-		monitor_write("kblayout - Display current keyboard layout\n");
-		monitor_write("kben 	- Switch keyboard layout to English\n");
-		monitor_write("kbsp 	- Switch keyboard layout to Spanish\n");
+		monitor_write("about 		- Display info about this OS\n");
+		monitor_write("help 		- Display this help menu\n");
+		monitor_write("kblayout 	- Display current keyboard layout\n");
+		monitor_write("kben 		- Switch keyboard layout to English\n");
+		monitor_write("kbsp 		- Switch keyboard layout to Spanish\n");
 		monitor_write(
-				"chat 	- Switch to chat mode - Type exit to exit chatmode\n");
-		monitor_write("exit 	- Exit OS\n");
+				"chat 		- Switch to chat mode - Type exit to exit chatmode\n");
+		monitor_write("exit 		- Exit OS\n");
 		monitor_put('>');
 
 	} else if (!strcmp(pointer, "kblayout")) {
@@ -112,4 +112,3 @@ void bash_to_chat() {
 	//Listen to serial port
 	serial_listen(1);
 }
-

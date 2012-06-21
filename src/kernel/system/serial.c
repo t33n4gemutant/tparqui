@@ -46,11 +46,10 @@ int is_transmit_empty() {
 void port_serial_write(char a) {
 	while (is_transmit_empty() == 0)
 		;
-
 	outb(COM1, a);
 }
 
 void serial_listen(int i) {
-	log(L_INFO,"listening to serial");
+	log(L_INFO, "Listening to serial");
 	outb(COM1 + 1, i); // Enable recieve/transmit interrupts
 }

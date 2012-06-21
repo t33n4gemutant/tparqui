@@ -54,5 +54,4 @@
 #define	va_alist	__builtin_va_alist
 #define	va_dcl		__va_alist_t __builtin_va_alist; __va_ellipsis
 
-
 #endif
