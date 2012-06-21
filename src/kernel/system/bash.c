@@ -68,9 +68,9 @@ void interpret() {
 
 	} else if (!strcmp(pointer, "kblayout")) {
 		if (kbLayout) {
-			monitor_write("Keyboard currently in English\n>");
-		} else {
 			monitor_write("Keyboard currently in Spanish\n>");
+		} else {
+			monitor_write("Keyboard currently in English\n>");
 		}
 	} else if (!strcmp(pointer, "kben")) {
 		kbLayout = EN;

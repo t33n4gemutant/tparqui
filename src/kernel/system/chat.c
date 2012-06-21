@@ -37,8 +37,8 @@ void communicate() {
 		while (chatBuffer[i] != '\0') {
 			port_serial_write(chatBuffer[i++]);
 		}
-		//Send new line character to host
-		port_serial_write('\n');
+		//Send new line character to host not needed for real serial port
+		//port_serial_write('\n');
 	}
 }
 
@@ -54,7 +54,7 @@ void clearChatBuffer() {
 void chat_to_bash() {
 	current_program = BASH;
 	//Stop listening to serial port
-	monitor_put('\n');
+	monitor_put('\n>');
 	serial_listen(0);
 	monitor_switch_to(terminals[current_terminal - 1], chatTerminal);
 }
