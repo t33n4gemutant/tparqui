@@ -19,6 +19,7 @@ kmain() {
 	_Sti();
 	init_timer(50);
 	init_keyboard();
+	init_serial();
 	while (1)
 		;
 }

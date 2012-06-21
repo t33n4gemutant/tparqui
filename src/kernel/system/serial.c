@@ -28,7 +28,6 @@ int serial_received() {
 }
 
 char port_serial_read() {
-	log(L_INFO, "sread");
 	while (serial_received() == 0)
 		;
 	return inb(COM1);
@@ -39,8 +38,6 @@ int is_transmit_empty() {
 }
 
 void port_serial_write(char a) {
-	log(L_INFO, "sw");
-
 	while (is_transmit_empty() == 0)
 		;
 

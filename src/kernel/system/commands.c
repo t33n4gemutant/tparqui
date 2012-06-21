@@ -10,7 +10,6 @@ void getCommand(char * buffer) {
 		monitor_write("ArquiOS v0.1 by Elli Federico and Pierri Alan");
 	} else if (!strcmp(buffer, "chat")) {
 		monitor_switch_to(10);
-		init_serial();
 	} else if (current_terminal == 10) { //Chat mode
 		if (!strcmp(buffer, "exit")) {
 			monitor_clear();
@@ -25,7 +24,7 @@ void getCommand(char * buffer) {
 		do {
 			c = port_serial_read();
 			monitor_put(c);
-		} while(c != '\n');
+		} while (c != '\n');
 	}
 }
 
