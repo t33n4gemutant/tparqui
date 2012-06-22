@@ -25,7 +25,7 @@
 #define EN 0
 #define SP 1
 
-char kbLayout = 0;
+char kbLayout;
 char kbFlags;
 char fKeys;
 char erase;

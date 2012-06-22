@@ -6,7 +6,6 @@
 
 /* Handles the serial port interrupt */
 void serial_handler(registers_t regs) {
-	log(L_INFO, "handler");
 	char c;
 	do {
 		c = port_serial_read();

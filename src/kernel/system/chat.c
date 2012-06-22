@@ -11,12 +11,12 @@ static char chatBuffer[CHAT_BUFFER];
 u16int chatBufPointer;
 
 void init_chat() {
-	//chatBufPointer = 0;
-	/*int j = 0;
+	chatBufPointer = 0;
+	int j = 0;
 	 while (j < TERMINAL_SIZE) {
 	 chatTerminal[j] = '\0';
 	 j++;
-	 }*/
+	 }
 }
 
 void chatInsert(char c) {

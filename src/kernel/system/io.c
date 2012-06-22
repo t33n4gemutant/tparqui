@@ -33,53 +33,131 @@ void syswrite(int fd, char c) {
 	}
 }
 
-void printf(const char * format, ...) {
-	int escaped = 0;
-	int special = 0;
+void printf(char * formatString, ...) {
+	int integer;
+	unsigned int unsigenedInteger;
+	char * string;
+	char out[40];
+	char c;
+
 	va_list args;
-	va_start(args, format);
-	while (*format != '\0') {
-		if (special) {
-			if (*format == 'd' || *format == 'i') {
-				putd(va_arg(args, int));
-			}
-			if (*format == 'c') {
-				putc(va_arg(args, char));
-			}
-			if (*format == 'f') {
-				putf(va_arg(args, double));
-			}
-			if (*format == 'u') {
-				putu(va_arg(args, unsigned));
-			}
-		} else if (escaped) {
-			if (*format == 'n') {
-				putc('\n');
-			} else if (*format == 't') {
-				printf("    ");
-			} else {
-				putc(*format);
-			}
 
-		}
+	va_start(args, formatString);
 
-		if (*format == '\\') {
-			if (!escaped) {
-				escaped = 1;
-			} else {
-				escaped = 0;
+	while (*formatString != '\0') {
+		if (*formatString == '%') {
+
+			formatString++;
+
+			switch (*formatString) {
+			case 'c':
+				c = va_arg(args, int);
+				putc(c);
+				break;
+			case 's':
+				string = va_arg(args, char *);
+				prints(string);
+				break;
+			case 'd':
+				integer = va_arg(args, int);
+				if (integer < 0) {
+					integer = -integer;
+					putc('-');
+				}
+				prints(numberBaseNtoString(integer, 10, out));
+				break;
+			case 'u':
+				unsigenedInteger = va_arg(args, unsigned int);
+				prints(numberBaseNtoString(unsigenedInteger, 10, out));
+				break;
+			case 'o':
+				integer = va_arg(args, unsigned int);
+				prints(numberBaseNtoString(integer, 8, out));
+				break;
+			case 'x':
+				unsigenedInteger = va_arg(args, unsigned int);
+				prints(numberBaseNtoString(unsigenedInteger, 16, out));
+				break;
+			case '%':
+				putc('%');
+				break;
 			}
 		} else {
-			escaped = 0;
+			putc(*formatString);
 		}
-		if (*format == '%') {
-			special = 1;
-		} else {
-			special = 0;
-		}
-		format++;
+		formatString++;
 	}
 	va_end(args);
+}
+
+int sscanf(char *stream, char *format, ...) {
+	va_list ap;
+	va_start(ap, format);
+	int i = 0;
+	int j = 0;
+	int converted;
+
+	int *integer, iTmp, iTmp2;
+	char* string;
+	char *chr;
+	unsigned int *uinteger;
+
+	while (format[i]) {
+		if (format[i] == '%') {
+			i++;
+			switch (format[i++]) {
+			case 'c':
+				chr = va_arg(ap, char*);
+				*chr = stream[j++];
+				break;
+			case 'd':
+				integer = va_arg(ap, int *);
+				iTmp = 0;
+				iTmp2 = 1;
+				if (stream[j] == '-') {
+					iTmp2 = -1;
+					j++;
+				}
+				while (isNumber(stream[j])) {
+					iTmp = iTmp * 10 + (stream[j] - '0');
+					j++;
+				}
+				*integer = iTmp * iTmp2;
+			case 'u':
+				uinteger = va_arg(ap, unsigned int *);
+				iTmp = 0;
+				while (isNumber(stream[j])) {
+					iTmp = iTmp * 10 + (stream[j] - '0');
+					j++;
+				}
+				*uinteger = iTmp;
+				break;
+			case 's':
+				string = va_arg(ap, char *);
+				iTmp = 0;
+				while (stream[j] != ' ') {
+					string[iTmp++] = stream[j++];
+				}
+				string[iTmp] = '\0';
+				break;
+			default:
+				// WRONG %X
+				return converted;
+			}
+		} else {
+			if (format[i] == stream[j]) {
+				i++;
+				j++;
+			} else {
+				//WRONG FORMAT STRING
+				return converted;
+			}
+		}
+	}
+}
+
+static int isNumber(char c) {
+	return (c >= '0' && c <= '9');
 }
 
 void putc(char c) {
@@ -87,6 +165,44 @@ void putc(char c) {
 		return;
 	}
 	__write(STDOUT, c);
+}
+
+static void prints(char * string) {
+	while (*string != '\0') {
+		putc(*string);
+		string++;
+	}
+}
+
+static char * numberBaseNtoString(unsigned int number, int base, char * out) {
+
+	int digits[40];
+	int position = 0;
+	char * numbers = "0123456789ABCDEF";
+	int index = 0;
+
+	if (number != 0) {
+		while (number > 0) {
+			if (number < base) {
+				digits[position] = number;
+				number = 0;
+			} else {
+				digits[position] = number % base;
+				number /= base;
+			}
+			position++;
+		}
+
+		for (index = 0; position > 0; position--, index++) {
+			out[index] = numbers[digits[position - 1] % base];
+		}
+		out[index] = '\0';
+	} else {
+		out[0] = '0';
+		out[1] = '\0';
+	}
+
+	return out;
 }
 
 void putd(char c) {

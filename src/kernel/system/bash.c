@@ -23,6 +23,14 @@ void init_bash() {
 		bufPointer[i] = 0;
 		i++;
 	}
+	i = 0;
+	while (i < BASH_BUFFER) {
+		int b = 0;
+		while (b < TERMINAL_QTY) {
+			buffers[b++][i] = '\0';
+		}
+		i++;
+	}
 	i = 1;
 	int j = 0;
 	while (i < TERMINAL_QTY) {
@@ -107,7 +115,7 @@ void clearBashBuffer() {
 }
 
 void bash_to_chat() {
-	monitor_switch_to(chatTerminal, terminals[current_terminal - 1]);
+	monitor_switch_to(chatTerminal, terminals[current_terminal]);
 	monitor_put('\n');
 	//Listen to serial port
 	serial_listen(1);

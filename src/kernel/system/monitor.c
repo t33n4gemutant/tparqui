@@ -219,7 +219,6 @@ void monitor_switch_to(u16int * terminal, u16int * currentTerminal) {
 		currentTerminal[i] = *location;
 		i++;
 	}
-	monitor_clear();
 	u8int aux_x = 0;
 	u8int aux_y = 0;
 	cursor_x = 0;
@@ -232,7 +231,7 @@ void monitor_switch_to(u16int * terminal, u16int * currentTerminal) {
 			cursor_x = 0;
 			cursor_y++;
 		}
-		if (terminal[cursor_x + cursor_y * 80] != (' ' | attribute)) {
+		if (terminal[cursor_x + cursor_y * 80] != (' ' | attribute) || terminal[cursor_x + cursor_y * 80] == '\0'){
 			aux_x = cursor_x;
 			aux_y = cursor_y;
 		}
@@ -244,4 +243,12 @@ void monitor_switch_to(u16int * terminal, u16int * currentTerminal) {
 	cursor_x++;
 	scroll();
 	move_cursor();
+}
+
+void delay(){
+	int i = -1000;
+	while(i < 1000){
+		i++;
+
+	}
 }
